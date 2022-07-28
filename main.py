@@ -1,9 +1,10 @@
 import json
-from flask import Flask
+from flask import Flask, jsonify
 import pymongo
 from pymongo.server_api import ServerApi
 import requests
 from types import SimpleNamespace
+
 
 app = Flask(__name__)
 
@@ -25,7 +26,13 @@ def addrepos():
     db.github_repos.insert_many(resp)
     return f"added {resp}"
 
-    
+@app.route('/getrepos')
+def getrepos():
+    db = dbconnect()
+    data = db.github_repos.distinct("name")
+    print(data)
+    return jsonify({'names': data})
+
 def dbconnect():
     print("connecting")
     password =  "!password123"
